@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Thalwil – Retro Future Departures</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --fg:#000000;
+    --muted:#555555;
+    --line:#000000;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:"Courier New", Courier, monospace;
+  }
+
+  body{
+    min-height:100vh;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    padding:16px;
+  }
+
+  .top{
+    border:4px solid var(--line);
+    padding:14px 16px 12px;
+    margin-bottom:14px;
+    text-align:center;
+  }
+
+  .eyebrow{
+    font-size:14px;
+    letter-spacing:3px;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+
+  .station{
+    font-size:42px;
+    line-height:1;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+
+  .subtitle{
+    margin-top:8px;
+    font-size:16px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+
+  .panel-head{
+    display:grid;
+    grid-template-columns:100px 1fr 86px;
+    gap:8px;
+    border-top:4px solid var(--line);
+    border-bottom:4px solid var(--line);
+    padding:8px 0;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:100px 1fr 86px;
+    gap:8px;
+    align-items:stretch;
+    border-bottom:3px solid var(--line);
+    padding:10px 0;
+  }
+
+  .timebox{
+    border:3px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 4px;
+    min-height:72px;
+  }
+
+  .time{
+    font-family:"Courier New", Courier, monospace;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:1px;
+  }
+
+  .main{
+    border-left:3px solid var(--line);
+    border-right:3px solid var(--line);
+    padding:8px 12px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-width:0;
+  }
+
+  .route{
+    line-height:1.1;
+  }
+
+  .linecode{
+    display:inline-block;
+    border:3px solid var(--line);
+    padding:2px 8px;
+    margin-right:10px;
+    font-size:22px;
+    font-weight:700;
+    vertical-align:middle;
+  }
+
+  .dest{
+    font-size:24px;
+    font-weight:700;
+    text-transform:uppercase;
+    vertical-align:middle;
+    word-break:break-word;
+  }
+
+  .meta{
+    margin-top:7px;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+
+  .platform{
+    border:3px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    min-height:72px;
+  }
+
+  .platform .label{
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  .platform .value{
+    margin-top:4px;
+    font-size:25px;
+    font-weight:700;
+  }
+
+  .footer{
+    margin-top:14px;
+    border:4px solid var(--line);
+    padding:10px 12px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+
+  .status{
+    font-size:16px;
+    padding:18px 0;
+  }
+
+  .error{
+    border:4px solid var(--line);
+    padding:20px;
+    font-size:18px;
+    line-height:1.4;
+    text-transform:uppercase;
+  }
+
+  @media (max-width:520px){
+    .wrap{padding:10px;}
+    .station{font-size:34px;}
+    .subtitle{font-size:13px;}
+    .panel-head{grid-template-columns:80px 1fr 68px;}
+    .row{grid-template-columns:80px 1fr 68px;}
+    .time{font-size:24px;}
+    .linecode{font-size:18px;padding:2px 5px;margin-right:6px;}
+    .dest{font-size:19px;}
+    .main{padding:7px 8px;}
+    .platform .value{font-size:20px;}
+    .footer{font-size:11px; flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="eyebrow">Temporal Transit Interface</div>
+    <div class="station">THALWIL</div>
+    <div class="subtitle">Next Departures // Destination Timeline</div>
+  </div>
+
+  <div class="panel-head">
+    <div>Time</div>
+    <div>Destination</div>
+    <div>Track</div>
+  </div>
+
+  <div id="board">
+    <div class="status">Synchronising timetable...</div>
+  </div>
+
+  <div class="footer">
+    <div id="status">System online</div>
+    <div>88 MPH // Rail Mode</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var API = "https://transport.opendata.ch/v1/stationboard?station=Thalwil&limit=8";
+  var board = document.getElementById("board");
+  var status = document.getElementById("status");
+
+  function pad(n) {
+    return n < 10 ? "0" + n : "" + n;
+  }
+
+  function hhmm(value) {
+    if (!value) return "--:--";
+    var d = new Date(value);
+    if (isNaN(d.getTime())) return "--:--";
+    return pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function getDelay(stop) {
+    try {
+      if (!stop || !stop.departure || !stop.prognosis || !stop.prognosis.departure) return null;
+      var planned = new Date(stop.departure).getTime();
+      var actual = new Date(stop.prognosis.departure).getTime();
+      if (isNaN(planned) || isNaN(actual)) return null;
+      var mins = Math.round((actual - planned) / 60000);
+      return mins > 0 ? mins : 0;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function render(data) {
+    var items = data && data.stationboard ? data.stationboard : [];
+    if (!items.length) {
+      board.innerHTML = '<div class="error">No departures detected.</div>';
+      return;
+    }
+
+    var html = "";
+    for (var i = 0; i < items.length; i++) {
+      var x = items[i] || {};
+      var stop = x.stop || {};
+      var delay = getDelay(stop);
+      var line = x.number || x.name || x.category || "–";
+      var dest = x.to || "–";
+      var platform = stop.platform || "–";
+      var meta = delay && delay > 0 ? "Delay +" + delay + " min" : "On schedule";
+
+      html +=
+        '<div class="row">' +
+          '<div class="timebox"><div class="time">' + escapeHtml(hhmm(stop.departure)) + '</div></div>' +
+          '<div class="main">' +
+            '<div class="route">' +
+              '<span class="linecode">' + escapeHtml(line) + '</span>' +
+              '<span class="dest">' + escapeHtml(dest) + '</span>' +
+            '</div>' +
+            '<div class="meta">' + escapeHtml(meta) + '</div>' +
+          '</div>' +
+          '<div class="platform">' +
+            '<div class="label">Track</div>' +
+            '<div class="value">' + escapeHtml(platform) + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    board.innerHTML = html;
+
+    var now = new Date();
+    status.innerHTML =
+      "Last sync " + pad(now.getHours()) + ":" + pad(now.getMinutes()) +
+      " // Auto refresh 60s";
+  }
+
+  function loadBoard() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", API, true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          render(JSON.parse(xhr.responseText));
+        } catch (e) {
+          board.innerHTML = '<div class="error">Timetable data unreadable.</div>';
+        }
+      } else {
+        board.innerHTML = '<div class="error">Connection lost. Check Wi-Fi.</div>';
+      }
+    };
+    xhr.onerror = function () {
+      board.innerHTML = '<div class="error">Connection lost. Check Wi-Fi.</div>';
+    };
+    xhr.send();
+  }
+
+  loadBoard();
+  window.setInterval(loadBoard, 60000);
+})();
+</script>
+</body>
+</html>
