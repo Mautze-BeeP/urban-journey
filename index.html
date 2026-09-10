@@ -31,15 +31,16 @@
   }
 
   .station {
-    font-size: 24px;
+    font-size: 34px;
     font-weight: bold;
-    line-height: 1.1;
+    line-height: 38px;
     letter-spacing: 1px;
   }
 
   .subtitle {
     margin-top: 2px;
-    font-size: 8px;
+    font-size: 12px;
+    line-height: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -53,8 +54,9 @@
   thead th {
     border-top: 3px solid #000;
     border-bottom: 3px solid #000;
-    padding: 3px 2px;
-    font-size: 8px;
+    padding: 8px 2px;
+    font-size: 16px;
+    line-height: 19px;
     text-transform: uppercase;
     text-align: center;
     vertical-align: top;
@@ -62,64 +64,43 @@
 
   tbody td {
     border-bottom: 2px solid #000;
-    padding: 4px 2px;
-    font-size: 13px;
-    line-height: 15px;
+    padding: 9px 3px;
+    font-size: 19px;
+    line-height: 23px;
     vertical-align: top;
     overflow: hidden;
     white-space: nowrap;
   }
 
   td.time {
-    width: 10%;
-    font-size: 18px;
+    font-size: 24px;
+    line-height: 26px;
     font-weight: bold;
     text-align: left;
   }
 
-  td.wiedikon {
-    width: 12%;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  td.zurich {
-    width: 12%;
-    text-align: center;
-    font-weight: bold;
-  }
-
+  td.wiedikon,
+  td.zurich,
   td.track {
-    width: 8%;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  td.line {
-    width: 10%;
+    font-size: 19px;
+    line-height: 23px;
     text-align: center;
     font-weight: bold;
   }
 
   td.status {
-    width: 14%;
     text-align: center;
-    font-size: 9px;
-    text-transform: uppercase;
-  }
-
-  td.destination {
-    width: 34%;
-    text-align: left;
+    font-size: 18px;
+    line-height: 23px;
     font-weight: bold;
-    text-transform: uppercase;
   }
 
   .footer {
     margin-top: 4px;
     border: 3px solid #000;
-    padding: 3px 5px;
-    font-size: 8px;
+    padding: 6px 5px;
+    font-size: 10px;
+    line-height: 13px;
     text-transform: uppercase;
     overflow: hidden;
   }
@@ -144,74 +125,31 @@
 
   /* Conservative fallback for very narrow Tolino browser viewports */
   @media screen and (max-width: 700px) {
-    .wrap { width: 99%; }
-    .station { font-size: 22px; }
-    tbody td { font-size: 12px; line-height: 14px; }
-    td.time { font-size: 17px; }
-    td.status { font-size: 8px; }
-    thead th { font-size: 7px; }
-  }
+    .wrap {
+      width: 99%;
+    }
 
-  /* Tolino large-text layout */
-  .station {
-    font-size: 34px;
-    line-height: 38px;
-  }
+    .station {
+      font-size: 32px;
+    }
 
-  .subtitle {
-    font-size: 12px;
-    line-height: 15px;
-  }
+    tbody td {
+      font-size: 18px;
+      line-height: 22px;
+    }
 
-  thead th {
-    padding: 7px 2px;
-    font-size: 12px;
-    line-height: 15px;
-  }
+    td.time {
+      font-size: 23px;
+    }
 
-  tbody td {
-    padding: 9px 3px;
-    font-size: 19px;
-    line-height: 23px;
-  }
+    td.status {
+      font-size: 17px;
+    }
 
-  td.time {
-    width: auto;
-    font-size: 24px;
-    line-height: 26px;
-  }
-
-  td.wiedikon,
-  td.zurich,
-  td.track {
-    width: auto;
-    font-size: 19px;
-    line-height: 23px;
-  }
-
-  td.status {
-    width: auto;
-    font-size: 13px;
-    line-height: 18px;
-  }
-
-  td.destination {
-    width: auto;
-    font-size: 18px;
-    line-height: 23px;
-  }
-
-  .footer {
-    padding: 6px 5px;
-    font-size: 10px;
-    line-height: 13px;
-  }
-
-
-  td.status {
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
+    thead th {
+      font-size: 15px;
+      line-height: 18px;
+    }
   }
 
 </style>
@@ -226,26 +164,26 @@
 
   <table>
     <colgroup>
-      <col style="width:13%">
-      <col style="width:15%">
-      <col style="width:15%">
-      <col style="width:10%">
-      <col style="width:37%">
-      <col style="width:10%">
+      <col style="width:20%">
+      <col style="width:22%">
+      <col style="width:22%">
+      <col style="width:16%">
+      <col style="width:20%">
     </colgroup>
+
     <thead>
       <tr>
         <th>Time</th>
         <th>@Wiedikon</th>
         <th>@Zürich</th>
         <th>Track</th>
-        <th>Final Destination</th>
         <th>Status</th>
       </tr>
     </thead>
+
     <tbody id="board">
       <tr>
-        <td colspan="6" class="message">Synchronising timetable...</td>
+        <td colspan="5" class="message">Synchronising timetable...</td>
       </tr>
     </tbody>
   </table>
@@ -288,10 +226,14 @@
       if (!stop || !stop.departure || !stop.prognosis || !stop.prognosis.departure) {
         return null;
       }
+
       var planned = new Date(stop.departure).getTime();
       var actual = new Date(stop.prognosis.departure).getTime();
+
       if (isNaN(planned) || isNaN(actual)) return null;
+
       var mins = Math.round((actual - planned) / 60000);
+
       return mins > 0 ? mins : 0;
     } catch (e) {
       return null;
@@ -301,6 +243,7 @@
   function stationTime(item, names) {
     try {
       var passList = item.passList || [];
+
       for (var i = 0; i < passList.length; i++) {
         var p = passList[i] || {};
         var station = p.station || {};
@@ -313,6 +256,7 @@
         }
       }
     } catch (e) {}
+
     return null;
   }
 
@@ -331,12 +275,13 @@
       if (goesViaZurichHB(allItems[i])) {
         items.push(allItems[i]);
       }
+
       if (items.length >= 4) break;
     }
 
     if (!items.length) {
       board.innerHTML =
-        '<tr><td colspan="6" class="message">No trains via Zürich HB detected.</td></tr>';
+        '<tr><td colspan="5" class="message">No trains via Zürich HB detected.</td></tr>';
       return;
     }
 
@@ -348,17 +293,34 @@
       var delay = getDelay(stop);
 
       var dep = hhmm(stop.departure);
-      var wiedikon = stationTime(x, ["Zürich Wiedikon", "Zurich Wiedikon", "Wiedikon"]);
-      var zurich = stationTime(x, ["Zürich HB", "Zurich HB"]);
+      var wiedikon = stationTime(
+        x,
+        ["Zürich Wiedikon", "Zurich Wiedikon", "Wiedikon"]
+      );
+      var zurich = stationTime(
+        x,
+        ["Zürich HB", "Zurich HB"]
+      );
+
       var track = stop.platform || "–";
       var dest = x.to || "–";
-      var statusText = delay && delay > 0 ? "+" + delay : "&#10003;";
 
-      if (!wiedikon) wiedikon = "X";
+      var statusText =
+        delay && delay > 0
+          ? "+" + delay
+          : "&#10003;";
+
+      if (!wiedikon) {
+        wiedikon = "X";
+      }
+
       if (!zurich && (dest === "Zürich HB" || dest === "Zurich HB")) {
         zurich = "ARR";
       }
-      if (!zurich) zurich = "--:--";
+
+      if (!zurich) {
+        zurich = "--:--";
+      }
 
       out +=
         '<tr>' +
@@ -366,7 +328,6 @@
           '<td class="wiedikon">' + esc(wiedikon) + '</td>' +
           '<td class="zurich">' + esc(zurich) + '</td>' +
           '<td class="track">' + esc(track) + '</td>' +
-          '<td class="destination">' + esc(dest) + '</td>' +
           '<td class="status">' + statusText + '</td>' +
         '</tr>';
     }
@@ -374,13 +335,18 @@
     board.innerHTML = out;
 
     var now = new Date();
+
     status.innerHTML =
-      "Last sync " + pad(now.getHours()) + ":" + pad(now.getMinutes()) +
+      "Last sync " +
+      pad(now.getHours()) +
+      ":" +
+      pad(now.getMinutes()) +
       " // refresh 60s";
   }
 
   function loadBoard() {
     var xhr = new XMLHttpRequest();
+
     xhr.open("GET", API, true);
 
     xhr.onreadystatechange = function () {
@@ -391,25 +357,27 @@
           render(JSON.parse(xhr.responseText));
         } catch (e) {
           board.innerHTML =
-            '<tr><td colspan="6" class="message">Timetable data unreadable.</td></tr>';
+            '<tr><td colspan="5" class="message">Timetable data unreadable.</td></tr>';
         }
       } else {
         board.innerHTML =
-          '<tr><td colspan="6" class="message">Connection lost. Check Wi-Fi.</td></tr>';
+          '<tr><td colspan="5" class="message">Connection lost. Check Wi-Fi.</td></tr>';
       }
     };
 
     xhr.onerror = function () {
       board.innerHTML =
-        '<tr><td colspan="6" class="message">Connection lost. Check Wi-Fi.</td></tr>';
+        '<tr><td colspan="5" class="message">Connection lost. Check Wi-Fi.</td></tr>';
     };
 
     xhr.send();
   }
 
   loadBoard();
+
   window.setInterval(loadBoard, 60000);
 })();
 </script>
+
 </body>
 </html>
