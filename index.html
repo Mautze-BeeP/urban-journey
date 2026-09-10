@@ -151,6 +151,69 @@
     td.status { font-size: 8px; }
     thead th { font-size: 7px; }
   }
+
+  /* Tolino large-text layout */
+  .station {
+    font-size: 34px;
+    line-height: 38px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  thead th {
+    padding: 7px 2px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  tbody td {
+    padding: 9px 3px;
+    font-size: 19px;
+    line-height: 23px;
+  }
+
+  td.time {
+    width: auto;
+    font-size: 24px;
+    line-height: 26px;
+  }
+
+  td.wiedikon,
+  td.zurich,
+  td.track {
+    width: auto;
+    font-size: 19px;
+    line-height: 23px;
+  }
+
+  td.status {
+    width: auto;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  td.destination {
+    width: auto;
+    font-size: 18px;
+    line-height: 23px;
+  }
+
+  .footer {
+    padding: 6px 5px;
+    font-size: 10px;
+    line-height: 13px;
+  }
+
+
+  td.status {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
 </style>
 </head>
 <body>
@@ -163,13 +226,12 @@
 
   <table>
     <colgroup>
+      <col style="width:13%">
+      <col style="width:15%">
+      <col style="width:15%">
       <col style="width:10%">
-      <col style="width:12%">
-      <col style="width:12%">
-      <col style="width:8%">
+      <col style="width:37%">
       <col style="width:10%">
-      <col style="width:14%">
-      <col style="width:34%">
     </colgroup>
     <thead>
       <tr>
@@ -177,14 +239,13 @@
         <th>@Wiedikon</th>
         <th>@Zürich</th>
         <th>Track</th>
-        <th>Line</th>
-        <th>Status</th>
         <th>Final Destination</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody id="board">
       <tr>
-        <td colspan="7" class="message">Synchronising timetable...</td>
+        <td colspan="6" class="message">Synchronising timetable...</td>
       </tr>
     </tbody>
   </table>
@@ -275,7 +336,7 @@
 
     if (!items.length) {
       board.innerHTML =
-        '<tr><td colspan="7" class="message">No trains via Zürich HB detected.</td></tr>';
+        '<tr><td colspan="6" class="message">No trains via Zürich HB detected.</td></tr>';
       return;
     }
 
@@ -290,9 +351,8 @@
       var wiedikon = stationTime(x, ["Zürich Wiedikon", "Zurich Wiedikon", "Wiedikon"]);
       var zurich = stationTime(x, ["Zürich HB", "Zurich HB"]);
       var track = stop.platform || "–";
-      var line = x.number || x.name || x.category || "–";
       var dest = x.to || "–";
-      var statusText = delay && delay > 0 ? "+" + delay + " min" : "On schedule";
+      var statusText = delay && delay > 0 ? "+" + delay : "&#10003;";
 
       if (!wiedikon) wiedikon = "X";
       if (!zurich && (dest === "Zürich HB" || dest === "Zurich HB")) {
@@ -306,9 +366,8 @@
           '<td class="wiedikon">' + esc(wiedikon) + '</td>' +
           '<td class="zurich">' + esc(zurich) + '</td>' +
           '<td class="track">' + esc(track) + '</td>' +
-          '<td class="line">' + esc(line) + '</td>' +
-          '<td class="status">' + esc(statusText) + '</td>' +
           '<td class="destination">' + esc(dest) + '</td>' +
+          '<td class="status">' + statusText + '</td>' +
         '</tr>';
     }
 
@@ -332,17 +391,17 @@
           render(JSON.parse(xhr.responseText));
         } catch (e) {
           board.innerHTML =
-            '<tr><td colspan="7" class="message">Timetable data unreadable.</td></tr>';
+            '<tr><td colspan="6" class="message">Timetable data unreadable.</td></tr>';
         }
       } else {
         board.innerHTML =
-          '<tr><td colspan="7" class="message">Connection lost. Check Wi-Fi.</td></tr>';
+          '<tr><td colspan="6" class="message">Connection lost. Check Wi-Fi.</td></tr>';
       }
     };
 
     xhr.onerror = function () {
       board.innerHTML =
-        '<tr><td colspan="7" class="message">Connection lost. Check Wi-Fi.</td></tr>';
+        '<tr><td colspan="6" class="message">Connection lost. Check Wi-Fi.</td></tr>';
     };
 
     xhr.send();
