@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thalwil Departure Board</title>
+
 <style>
   html, body {
     margin: 0;
@@ -55,26 +56,26 @@
     border-top: 3px solid #000;
     border-bottom: 3px solid #000;
     padding: 8px 2px;
-    font-size: 16px;
-    line-height: 19px;
+    font-size: 19px;
+    line-height: 23px;
     text-transform: uppercase;
     text-align: center;
-    vertical-align: top;
+    vertical-align: middle;
   }
 
   tbody td {
     border-bottom: 2px solid #000;
-    padding: 9px 3px;
-    font-size: 19px;
-    line-height: 23px;
-    vertical-align: top;
+    padding: 10px 3px;
+    font-size: 23px;
+    line-height: 28px;
+    vertical-align: middle;
     overflow: hidden;
     white-space: nowrap;
   }
 
   td.time {
-    font-size: 24px;
-    line-height: 26px;
+    font-size: 29px;
+    line-height: 32px;
     font-weight: bold;
     text-align: left;
   }
@@ -82,16 +83,9 @@
   td.wiedikon,
   td.zurich,
   td.track {
-    font-size: 19px;
-    line-height: 23px;
+    font-size: 23px;
+    line-height: 28px;
     text-align: center;
-    font-weight: bold;
-  }
-
-  td.status {
-    text-align: center;
-    font-size: 18px;
-    line-height: 23px;
     font-weight: bold;
   }
 
@@ -119,42 +113,42 @@
 
   .message {
     padding: 12px 4px;
-    font-size: 12px;
+    font-size: 14px;
     text-align: center;
   }
 
-  /* Conservative fallback for very narrow Tolino browser viewports */
+  /* Tolino / narrow browser */
   @media screen and (max-width: 700px) {
+
     .wrap {
       width: 99%;
     }
 
     .station {
-      font-size: 32px;
-    }
-
-    tbody td {
-      font-size: 18px;
-      line-height: 22px;
-    }
-
-    td.time {
-      font-size: 23px;
-    }
-
-    td.status {
-      font-size: 17px;
+      font-size: 34px;
     }
 
     thead th {
-      font-size: 15px;
-      line-height: 18px;
+      font-size: 19px;
+      line-height: 23px;
+    }
+
+    tbody td {
+      font-size: 23px;
+      line-height: 28px;
+    }
+
+    td.time {
+      font-size: 29px;
+      line-height: 32px;
     }
   }
 
 </style>
 </head>
+
 <body>
+
 <div class="wrap">
 
   <div class="top">
@@ -163,12 +157,12 @@
   </div>
 
   <table>
+
     <colgroup>
-      <col style="width:20%">
-      <col style="width:22%">
-      <col style="width:22%">
+      <col style="width:30%">
+      <col style="width:27%">
+      <col style="width:27%">
       <col style="width:16%">
-      <col style="width:20%">
     </colgroup>
 
     <thead>
@@ -177,205 +171,537 @@
         <th>@Wiedikon</th>
         <th>@Zürich</th>
         <th>Track</th>
-        <th>Status</th>
       </tr>
     </thead>
 
     <tbody id="board">
       <tr>
-        <td colspan="5" class="message">Synchronising timetable...</td>
+        <td colspan="4" class="message">
+          Synchronising timetable...
+        </td>
       </tr>
     </tbody>
+
   </table>
 
   <div class="footer">
-    <div class="footer-left" id="status">System online</div>
-    <div class="footer-right">88 MPH // Rail Mode</div>
+
+    <div class="footer-left" id="status">
+      System online
+    </div>
+
+    <div class="footer-right">
+      88 MPH // Rail Mode
+    </div>
+
     <div class="clear"></div>
+
   </div>
 
 </div>
 
+
 <script>
 (function () {
-  var API = "https://transport.opendata.ch/v1/stationboard?station=Thalwil&limit=20";
-  var board = document.getElementById("board");
-  var status = document.getElementById("status");
+
+  var API =
+    "https://transport.opendata.ch/v1/stationboard?station=Thalwil&limit=20";
+
+  var board =
+    document.getElementById("board");
+
+  var status =
+    document.getElementById("status");
+
 
   function pad(n) {
-    return n < 10 ? "0" + n : "" + n;
+    return n < 10
+      ? "0" + n
+      : "" + n;
   }
+
 
   function hhmm(value) {
-    if (!value) return "--:--";
-    var d = new Date(value);
-    if (isNaN(d.getTime())) return "--:--";
-    return pad(d.getHours()) + ":" + pad(d.getMinutes());
+
+    if (!value) {
+      return "--:--";
+    }
+
+    var d =
+      new Date(value);
+
+    if (isNaN(d.getTime())) {
+      return "--:--";
+    }
+
+    return (
+      pad(d.getHours()) +
+      ":" +
+      pad(d.getMinutes())
+    );
   }
 
+
   function esc(s) {
-    return String(s == null ? "" : s)
+
+    return String(
+      s == null ? "" : s
+    )
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
   }
 
+
   function getDelay(stop) {
+
     try {
-      if (!stop || !stop.departure || !stop.prognosis || !stop.prognosis.departure) {
+
+      if (
+        !stop ||
+        !stop.departure ||
+        !stop.prognosis ||
+        !stop.prognosis.departure
+      ) {
         return null;
       }
 
-      var planned = new Date(stop.departure).getTime();
-      var actual = new Date(stop.prognosis.departure).getTime();
+      var planned =
+        new Date(
+          stop.departure
+        ).getTime();
 
-      if (isNaN(planned) || isNaN(actual)) return null;
+      var actual =
+        new Date(
+          stop.prognosis.departure
+        ).getTime();
 
-      var mins = Math.round((actual - planned) / 60000);
+      if (
+        isNaN(planned) ||
+        isNaN(actual)
+      ) {
+        return null;
+      }
 
-      return mins > 0 ? mins : 0;
+      var mins =
+        Math.round(
+          (actual - planned) /
+          60000
+        );
+
+      return mins > 0
+        ? mins
+        : 0;
+
     } catch (e) {
+
       return null;
     }
   }
 
-  function stationTime(item, names) {
+
+  function stationTime(
+    item,
+    names
+  ) {
+
     try {
-      var passList = item.passList || [];
 
-      for (var i = 0; i < passList.length; i++) {
-        var p = passList[i] || {};
-        var station = p.station || {};
-        var name = station.name || "";
+      var passList =
+        item.passList || [];
 
-        for (var j = 0; j < names.length; j++) {
-          if (name === names[j]) {
-            return hhmm(p.arrival || p.departure);
+      for (
+        var i = 0;
+        i < passList.length;
+        i++
+      ) {
+
+        var p =
+          passList[i] || {};
+
+        var station =
+          p.station || {};
+
+        var name =
+          station.name || "";
+
+        for (
+          var j = 0;
+          j < names.length;
+          j++
+        ) {
+
+          if (
+            name === names[j]
+          ) {
+
+            return hhmm(
+              p.arrival ||
+              p.departure
+            );
           }
         }
       }
+
     } catch (e) {}
 
     return null;
   }
 
-  function goesViaZurichHB(item) {
-    return stationTime(item, ["Zürich HB", "Zurich HB"]) !== null ||
-           item.to === "Zürich HB" ||
-           item.to === "Zurich HB";
+
+  function goesViaZurichHB(
+    item
+  ) {
+
+    return (
+
+      stationTime(
+        item,
+        [
+          "Zürich HB",
+          "Zurich HB"
+        ]
+      ) !== null
+
+      ||
+
+      item.to ===
+        "Zürich HB"
+
+      ||
+
+      item.to ===
+        "Zurich HB"
+    );
   }
 
+
   function render(data) {
-    var allItems = data && data.stationboard ? data.stationboard : [];
+
+    var allItems =
+      data &&
+      data.stationboard
+        ? data.stationboard
+        : [];
+
     var items = [];
     var i;
 
-    for (i = 0; i < allItems.length; i++) {
-      if (goesViaZurichHB(allItems[i])) {
-        items.push(allItems[i]);
+
+    /*
+      Select the next 4 trains
+      that travel via Zürich HB.
+    */
+
+    for (
+      i = 0;
+      i < allItems.length;
+      i++
+    ) {
+
+      if (
+        goesViaZurichHB(
+          allItems[i]
+        )
+      ) {
+
+        items.push(
+          allItems[i]
+        );
       }
 
-      if (items.length >= 4) break;
+      if (
+        items.length >= 4
+      ) {
+        break;
+      }
     }
 
+
     if (!items.length) {
+
       board.innerHTML =
-        '<tr><td colspan="5" class="message">No trains via Zürich HB detected.</td></tr>';
+
+        '<tr>' +
+          '<td colspan="4" class="message">' +
+            'No trains via Zürich HB detected.' +
+          '</td>' +
+        '</tr>';
+
       return;
     }
 
+
     var out = "";
 
-    for (i = 0; i < items.length; i++) {
-      var x = items[i] || {};
-      var stop = x.stop || {};
-      var delay = getDelay(stop);
 
-      var dep = hhmm(stop.departure);
-      var wiedikon = stationTime(
-        x,
-        ["Zürich Wiedikon", "Zurich Wiedikon", "Wiedikon"]
-      );
-      var zurich = stationTime(
-        x,
-        ["Zürich HB", "Zurich HB"]
-      );
+    for (
+      i = 0;
+      i < items.length;
+      i++
+    ) {
 
-      var track = stop.platform || "–";
-      var dest = x.to || "–";
+      var x =
+        items[i] || {};
 
-      var statusText =
-        delay && delay > 0
-          ? "+" + delay
-          : "&#10003;";
+      var stop =
+        x.stop || {};
+
+      var delay =
+        getDelay(stop);
+
+
+      /*
+        Planned departure time
+      */
+
+      var dep =
+        hhmm(
+          stop.departure
+        );
+
+
+      /*
+        Wiedikon time
+      */
+
+      var wiedikon =
+        stationTime(
+          x,
+          [
+            "Zürich Wiedikon",
+            "Zurich Wiedikon",
+            "Wiedikon"
+          ]
+        );
+
+
+      /*
+        Zürich HB time
+      */
+
+      var zurich =
+        stationTime(
+          x,
+          [
+            "Zürich HB",
+            "Zurich HB"
+          ]
+        );
+
+
+      var track =
+        stop.platform || "–";
+
+      var dest =
+        x.to || "–";
+
+
+      /*
+        Delay display
+
+        On time:
+        21:14
+
+        Delayed:
+        21:14 +2
+      */
+
+      var statusText = "";
+
+      if (
+        delay &&
+        delay > 0
+      ) {
+        statusText =
+          " +" + delay;
+      }
+
+
+      var timeText =
+        esc(dep) +
+        statusText;
+
+
+      /*
+        Train does not
+        stop at Wiedikon
+      */
 
       if (!wiedikon) {
         wiedikon = "X";
       }
 
-      if (!zurich && (dest === "Zürich HB" || dest === "Zurich HB")) {
-        zurich = "ARR";
+
+      /*
+        Zürich HB is
+        the final stop
+      */
+
+      if (
+        !zurich &&
+        (
+          dest ===
+            "Zürich HB"
+
+          ||
+
+          dest ===
+            "Zurich HB"
+        )
+      ) {
+
+        zurich =
+          "ARR";
       }
+
 
       if (!zurich) {
-        zurich = "--:--";
+        zurich =
+          "--:--";
       }
 
+
       out +=
+
         '<tr>' +
-          '<td class="time">' + esc(dep) + '</td>' +
-          '<td class="wiedikon">' + esc(wiedikon) + '</td>' +
-          '<td class="zurich">' + esc(zurich) + '</td>' +
-          '<td class="track">' + esc(track) + '</td>' +
-          '<td class="status">' + statusText + '</td>' +
+
+          '<td class="time">' +
+            timeText +
+          '</td>' +
+
+          '<td class="wiedikon">' +
+            esc(wiedikon) +
+          '</td>' +
+
+          '<td class="zurich">' +
+            esc(zurich) +
+          '</td>' +
+
+          '<td class="track">' +
+            esc(track) +
+          '</td>' +
+
         '</tr>';
     }
 
-    board.innerHTML = out;
 
-    var now = new Date();
+    board.innerHTML =
+      out;
+
+
+    /*
+      Update footer
+    */
+
+    var now =
+      new Date();
+
 
     status.innerHTML =
+
       "Last sync " +
-      pad(now.getHours()) +
+
+      pad(
+        now.getHours()
+      ) +
+
       ":" +
-      pad(now.getMinutes()) +
+
+      pad(
+        now.getMinutes()
+      ) +
+
       " // refresh 60s";
   }
 
+
   function loadBoard() {
-    var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", API, true);
+    var xhr =
+      new XMLHttpRequest();
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4) return;
 
-      if (xhr.status >= 200 && xhr.status < 300) {
-        try {
-          render(JSON.parse(xhr.responseText));
-        } catch (e) {
-          board.innerHTML =
-            '<tr><td colspan="5" class="message">Timetable data unreadable.</td></tr>';
+    xhr.open(
+      "GET",
+      API,
+      true
+    );
+
+
+    xhr.onreadystatechange =
+      function () {
+
+        if (
+          xhr.readyState !== 4
+        ) {
+          return;
         }
-      } else {
-        board.innerHTML =
-          '<tr><td colspan="5" class="message">Connection lost. Check Wi-Fi.</td></tr>';
-      }
-    };
 
-    xhr.onerror = function () {
-      board.innerHTML =
-        '<tr><td colspan="5" class="message">Connection lost. Check Wi-Fi.</td></tr>';
-    };
+
+        if (
+          xhr.status >= 200 &&
+          xhr.status < 300
+        ) {
+
+          try {
+
+            render(
+              JSON.parse(
+                xhr.responseText
+              )
+            );
+
+          } catch (e) {
+
+            board.innerHTML =
+
+              '<tr>' +
+                '<td colspan="4" class="message">' +
+                  'Timetable data unreadable.' +
+                '</td>' +
+              '</tr>';
+          }
+
+        } else {
+
+          board.innerHTML =
+
+            '<tr>' +
+              '<td colspan="4" class="message">' +
+                'Connection lost. Check Wi-Fi.' +
+              '</td>' +
+            '</tr>';
+        }
+      };
+
+
+    xhr.onerror =
+      function () {
+
+        board.innerHTML =
+
+          '<tr>' +
+            '<td colspan="4" class="message">' +
+              'Connection lost. Check Wi-Fi.' +
+            '</td>' +
+          '</tr>';
+      };
+
 
     xhr.send();
   }
 
+
   loadBoard();
 
-  window.setInterval(loadBoard, 60000);
+
+  window.setInterval(
+    loadBoard,
+    60000
+  );
+
 })();
 </script>
 
