@@ -2,239 +2,199 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Thalwil → via Zürich HB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thalwil Departure Board</title>
 <style>
-  *{box-sizing:border-box}
-  html,body{
-    margin:0;
-    padding:0;
-    background:#fff;
-    color:#000;
-    font-family:"Courier New", Courier, monospace;
-  }
-  .wrap{
-    width:100%;
-    max-width:none;
-    margin:0 auto;
-    padding:5px 8px;
-  }
-  .top{
-    border:3px solid #000;
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    align-items:center;
-    padding:4px 8px;
-    margin-bottom:4px;
-    min-height:40px;
-  }
-  .eyebrow{
-    text-align:left;
-    margin:0;
-    font-size:8px;
-    letter-spacing:1px;
-    font-weight:700;
-    text-transform:uppercase;
-  }
-  .station{
-    font-size:26px;
-    line-height:1;
-    text-align:center;
-    white-space:nowrap;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-  }
-  .subtitle{
-    text-align:right;
-    margin:0;
-    font-size:8px;
-    letter-spacing:1px;
-    white-space:nowrap;
-    text-transform:uppercase;
-  }
-  .panel-head{
-    display:grid;
-    grid-template-columns:64px 72px 72px 48px 66px 76px 1fr;
-    gap:4px;
-    border-top:3px solid #000;
-    border-bottom:3px solid #000;
-    padding:3px 0;
-    font-size:8px;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-  }
-  .row{
-    display:grid;
-    grid-template-columns:64px 72px 72px 48px 66px 76px 1fr;
-    gap:4px;
-    align-items:start;
-    border-bottom:2px solid #000;
-    padding:3px 0;
-  }
-  .timebox{
-    border:0;
-    display:flex;
-    align-items:flex-start;
-    justify-content:flex-start;
-    padding:1px 2px 0;
-    min-height:0;
-  }
-  .time{
-    font-size:19px;
-    font-weight:700;
-    line-height:16px;
-  }
-  .main{display:contents}
-  .route{display:contents}
-  .linecode{
-    grid-column:2;
-    border:0;
-    margin:0;
-    padding:1px 3px 0;
-    text-align:center;
-    font-size:13px;
-    font-weight:700;
-    line-height:16px;
-  }
-  .dest{
-    grid-column:7;
-    display:block;
-    margin:0;
-    padding:0 0 0 4px;
-    font-size:14px;
-    line-height:16px;
-    height:16px;
-    font-weight:700;
-    text-transform:uppercase;
-    word-break:break-word;
-  }
-  .platform{
-    grid-column:6;
-    display:block;
-    margin:0;
-    padding:0;
-    height:16px;
-    min-height:16px;
-    line-height:16px;
-    text-align:center;
-  }
-  .platform .label{display:none}
-  .platform .value{
-    display:block;
-    margin:0;
-    padding:0;
-    font-size:14px;
-    line-height:16px;
-    height:16px;
-    font-weight:700;
-  }
-  .meta{
-    grid-column:5;
-    margin:0;
-    padding-top:1px;
-    font-size:8px;
-    text-align:center;
-    line-height:1.1;
-    text-transform:uppercase;
-  }
-  .footer{
-    margin-top:4px;
-    border:3px solid #000;
-    padding:3px 6px;
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    font-size:8px;
-    text-transform:uppercase;
-    letter-spacing:1px;
-  }
-  .status{
-    font-size:12px;
-    padding:12px 0;
-  }
-  .error{
-    border:3px solid #000;
-    padding:14px;
-    font-size:14px;
-    line-height:1.4;
-    text-transform:uppercase;
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #000;
+    font-family: "Courier New", Courier, monospace;
   }
 
-  .zurich-time{
-    grid-column:4;
-    display:block;
-    margin:0;
-    padding-top:0;
-    text-align:center;
-    font-size:14px;
-    line-height:16px;
-    height:16px;
-    font-weight:700;
+  body {
+    width: 100%;
   }
 
-
-  .wiedikon-time{
-    grid-column:3;
-    display:block;
-    margin:0;
-    padding-top:0;
-    text-align:center;
-    font-size:14px;
-    line-height:16px;
-    height:16px;
-    font-weight:700;
+  .wrap {
+    width: 98%;
+    margin: 0 auto;
+    padding: 4px 0 6px 0;
   }
 
+  .top {
+    border: 3px solid #000;
+    padding: 4px 6px;
+    margin-bottom: 4px;
+    text-align: center;
+  }
 
-  /* Final column order */
-  .timebox{grid-column:1 !important;}
-  .linecode{grid-column:2 !important;}
-  .wiedikon-time{grid-column:3 !important;}
-  .zurich-time{grid-column:4 !important;}
-  .platform{grid-column:5 !important;}
-  .meta{grid-column:6 !important;}
-  .dest{grid-column:7 !important;}
+  .station {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.1;
+    letter-spacing: 1px;
+  }
 
+  .subtitle {
+    margin-top: 2px;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-  /* Column order: Time | @Wiedikon | @Zürich | Track | Line | Status | Final Destination */
-  .timebox{grid-column:1 !important;}
-  .wiedikon-time{grid-column:2 !important;}
-  .zurich-time{grid-column:3 !important;}
-  .platform{grid-column:4 !important;}
-  .linecode{grid-column:5 !important;}
-  .meta{grid-column:6 !important;}
-  .dest{grid-column:7 !important;}
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
 
+  thead th {
+    border-top: 3px solid #000;
+    border-bottom: 3px solid #000;
+    padding: 3px 2px;
+    font-size: 8px;
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: top;
+  }
+
+  tbody td {
+    border-bottom: 2px solid #000;
+    padding: 4px 2px;
+    font-size: 13px;
+    line-height: 15px;
+    vertical-align: top;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  td.time {
+    width: 10%;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  td.wiedikon {
+    width: 12%;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  td.zurich {
+    width: 12%;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  td.track {
+    width: 8%;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  td.line {
+    width: 10%;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  td.status {
+    width: 14%;
+    text-align: center;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+
+  td.destination {
+    width: 34%;
+    text-align: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .footer {
+    margin-top: 4px;
+    border: 3px solid #000;
+    padding: 3px 5px;
+    font-size: 8px;
+    text-transform: uppercase;
+    overflow: hidden;
+  }
+
+  .footer-left {
+    float: left;
+  }
+
+  .footer-right {
+    float: right;
+  }
+
+  .clear {
+    clear: both;
+  }
+
+  .message {
+    padding: 12px 4px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* Conservative fallback for very narrow Tolino browser viewports */
+  @media screen and (max-width: 700px) {
+    .wrap { width: 99%; }
+    .station { font-size: 22px; }
+    tbody td { font-size: 12px; line-height: 14px; }
+    td.time { font-size: 17px; }
+    td.status { font-size: 8px; }
+    thead th { font-size: 7px; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <div class="top">
-    <div class="eyebrow">Temporal Transit Interface</div>
     <div class="station">THALWIL</div>
     <div class="subtitle">Next Departures // Via Zürich HB</div>
   </div>
 
-  <div class="panel-head">
-    <div>Time</div>
-    <div>@Wiedikon</div>
-    <div>@Zürich</div>
-    <div>Track</div>
-    <div>Line</div>
-    <div>Status</div>
-    <div>Final Destination</div>
-  </div>
-
-  <div id="board">
-    <div class="status">Synchronising timetable...</div>
-  </div>
+  <table>
+    <colgroup>
+      <col style="width:10%">
+      <col style="width:12%">
+      <col style="width:12%">
+      <col style="width:8%">
+      <col style="width:10%">
+      <col style="width:14%">
+      <col style="width:34%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>@Wiedikon</th>
+        <th>@Zürich</th>
+        <th>Track</th>
+        <th>Line</th>
+        <th>Status</th>
+        <th>Final Destination</th>
+      </tr>
+    </thead>
+    <tbody id="board">
+      <tr>
+        <td colspan="7" class="message">Synchronising timetable...</td>
+      </tr>
+    </tbody>
+  </table>
 
   <div class="footer">
-    <div id="status">System online</div>
-    <div>88 MPH // Rail Mode</div>
+    <div class="footer-left" id="status">System online</div>
+    <div class="footer-right">88 MPH // Rail Mode</div>
+    <div class="clear"></div>
   </div>
+
 </div>
 
 <script>
@@ -254,7 +214,7 @@
     return pad(d.getHours()) + ":" + pad(d.getMinutes());
   }
 
-  function escapeHtml(s) {
+  function esc(s) {
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -264,130 +224,106 @@
 
   function getDelay(stop) {
     try {
-      if (!stop || !stop.departure || !stop.prognosis || !stop.prognosis.departure) return null;
+      if (!stop || !stop.departure || !stop.prognosis || !stop.prognosis.departure) {
+        return null;
+      }
       var planned = new Date(stop.departure).getTime();
       var actual = new Date(stop.prognosis.departure).getTime();
       if (isNaN(planned) || isNaN(actual)) return null;
       var mins = Math.round((actual - planned) / 60000);
       return mins > 0 ? mins : 0;
-    } catch(e) {
+    } catch (e) {
       return null;
     }
   }
 
+  function stationTime(item, names) {
+    try {
+      var passList = item.passList || [];
+      for (var i = 0; i < passList.length; i++) {
+        var p = passList[i] || {};
+        var station = p.station || {};
+        var name = station.name || "";
+
+        for (var j = 0; j < names.length; j++) {
+          if (name === names[j]) {
+            return hhmm(p.arrival || p.departure);
+          }
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
+
   function goesViaZurichHB(item) {
-    try {
-      var passList = item.passList || [];
-      for (var i = 0; i < passList.length; i++) {
-        var station = passList[i] && passList[i].station;
-        var name = station && station.name ? station.name : "";
-        if (name === "Zürich HB" || name === "Zurich HB") {
-          return true;
-        }
-      }
-
-      var destination = item.to || "";
-      return destination === "Zürich HB" || destination === "Zurich HB";
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function arrivalAtWiedikon(item) {
-    try {
-      var passList = item.passList || [];
-      for (var i = 0; i < passList.length; i++) {
-        var p = passList[i] || {};
-        var station = p.station || {};
-        var name = station.name || "";
-
-        if (
-          name === "Zürich Wiedikon" ||
-          name === "Zurich Wiedikon" ||
-          name === "Wiedikon"
-        ) {
-          return hhmm(p.arrival || p.departure);
-        }
-      }
-    } catch (e) {}
-
-    return "X";
-  }
-
-  function arrivalAtZurichHB(item) {
-    try {
-      var passList = item.passList || [];
-      for (var i = 0; i < passList.length; i++) {
-        var p = passList[i] || {};
-        var station = p.station || {};
-        var name = station.name || "";
-        if (name === "Zürich HB" || name === "Zurich HB") {
-          return hhmm(p.arrival || p.departure);
-        }
-      }
-
-      // If Zürich HB is the final destination, passList may be incomplete.
-      var destination = item.to || "";
-      if (destination === "Zürich HB" || destination === "Zurich HB") {
-        var last = passList.length ? passList[passList.length - 1] : null;
-        if (last) return hhmm(last.arrival || last.departure);
-      }
-    } catch (e) {}
-
-    return "--:--";
+    return stationTime(item, ["Zürich HB", "Zurich HB"]) !== null ||
+           item.to === "Zürich HB" ||
+           item.to === "Zurich HB";
   }
 
   function render(data) {
     var allItems = data && data.stationboard ? data.stationboard : [];
     var items = [];
+    var i;
 
-    for (var j = 0; j < allItems.length; j++) {
-      if (goesViaZurichHB(allItems[j])) {
-        items.push(allItems[j]);
+    for (i = 0; i < allItems.length; i++) {
+      if (goesViaZurichHB(allItems[i])) {
+        items.push(allItems[i]);
       }
       if (items.length >= 4) break;
     }
 
     if (!items.length) {
-      board.innerHTML = '<div class="error">No trains via Zürich HB detected.</div>';
+      board.innerHTML =
+        '<tr><td colspan="7" class="message">No trains via Zürich HB detected.</td></tr>';
       return;
     }
 
-    var html = "";
-    for (var i = 0; i < items.length; i++) {
+    var out = "";
+
+    for (i = 0; i < items.length; i++) {
       var x = items[i] || {};
       var stop = x.stop || {};
       var delay = getDelay(stop);
-      var line = x.number || x.name || x.category || "–";
-      var wiedikonArrival = arrivalAtWiedikon(x);
-      var zurichArrival = arrivalAtZurichHB(x);
-      var dest = x.to || "–";
-      var platform = stop.platform || "–";
-      var meta = delay && delay > 0 ? "Delay +" + delay + " min" : "On schedule";
 
-      html +=
-        '<div class="row">' +
-          '<div class="timebox"><div class="time">' + escapeHtml(hhmm(stop.departure)) + '</div></div>' +
-          '<span class="wiedikon-time">' + escapeHtml(wiedikonArrival) + '</span>' +
-          '<span class="zurich-time">' + escapeHtml(zurichArrival) + '</span>' +
-          '<div class="platform"><div class="value">' + escapeHtml(platform) + '</div></div>' +
-          '<span class="linecode">' + escapeHtml(line) + '</span>' +
-          '<div class="meta">' + escapeHtml(meta) + '</div>' +
-          '<span class="dest">' + escapeHtml(dest) + '</span>' +
-        '</div>';
+      var dep = hhmm(stop.departure);
+      var wiedikon = stationTime(x, ["Zürich Wiedikon", "Zurich Wiedikon", "Wiedikon"]);
+      var zurich = stationTime(x, ["Zürich HB", "Zurich HB"]);
+      var track = stop.platform || "–";
+      var line = x.number || x.name || x.category || "–";
+      var dest = x.to || "–";
+      var statusText = delay && delay > 0 ? "+" + delay + " min" : "On schedule";
+
+      if (!wiedikon) wiedikon = "X";
+      if (!zurich && (dest === "Zürich HB" || dest === "Zurich HB")) {
+        zurich = "ARR";
+      }
+      if (!zurich) zurich = "--:--";
+
+      out +=
+        '<tr>' +
+          '<td class="time">' + esc(dep) + '</td>' +
+          '<td class="wiedikon">' + esc(wiedikon) + '</td>' +
+          '<td class="zurich">' + esc(zurich) + '</td>' +
+          '<td class="track">' + esc(track) + '</td>' +
+          '<td class="line">' + esc(line) + '</td>' +
+          '<td class="status">' + esc(statusText) + '</td>' +
+          '<td class="destination">' + esc(dest) + '</td>' +
+        '</tr>';
     }
 
-    board.innerHTML = html;
+    board.innerHTML = out;
 
     var now = new Date();
     status.innerHTML =
       "Last sync " + pad(now.getHours()) + ":" + pad(now.getMinutes()) +
-      " // Via Zürich HB // Auto refresh 60s";
+      " // refresh 60s";
   }
 
   function loadBoard() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", API, true);
+
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) return;
 
@@ -395,15 +331,18 @@
         try {
           render(JSON.parse(xhr.responseText));
         } catch (e) {
-          board.innerHTML = '<div class="error">Timetable data unreadable.</div>';
+          board.innerHTML =
+            '<tr><td colspan="7" class="message">Timetable data unreadable.</td></tr>';
         }
       } else {
-        board.innerHTML = '<div class="error">Connection lost. Check Wi-Fi.</div>';
+        board.innerHTML =
+          '<tr><td colspan="7" class="message">Connection lost. Check Wi-Fi.</td></tr>';
       }
     };
 
     xhr.onerror = function () {
-      board.innerHTML = '<div class="error">Connection lost. Check Wi-Fi.</div>';
+      board.innerHTML =
+        '<tr><td colspan="7" class="message">Connection lost. Check Wi-Fi.</td></tr>';
     };
 
     xhr.send();
